@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Threads Clone
+
+A full‑stack Threads-style social app built with Next.js App Router, Clerk authentication, MongoDB, and UploadThing.
+
+## Features
+
+- Email/social auth with Clerk
+- Onboarding flow and profile management
+- Thread creation, replies, and activity feed
+- Communities (organizations) synced from Clerk webhooks
+- Image uploads via UploadThing
+- Responsive layout with Tailwind + shadcn/ui
+
+## Tech Stack
+
+- Next.js (App Router)
+- React, TypeScript
+- Clerk (auth, organizations, webhooks)
+- MongoDB + Mongoose
+- UploadThing (file uploads)
+- Tailwind CSS, Radix UI
 
 ## Getting Started
 
-First, run the development server:
+### 1) Install dependencies
+
+```bash
+npm install
+```
+
+### 2) Configure environment variables
+
+Copy the example file and fill in your secrets:
+
+```bash
+cp .env.example .env.local
+```
+
+Required variables:
+
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+- `CLERK_SECRET_KEY`
+- `MONGODB_URL`
+
+Optional (but required if you use the webhook route):
+
+- `NEXT_CLERK_WEBHOOK_SECRET`
+
+UploadThing (required for image uploads):
+
+- `UPLOADTHING_SECRET`
+- `UPLOADTHING_APP_ID`
+
+Where to get the values:
+
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY`
+  - Go to the Clerk dashboard → your application → API Keys.
+- `NEXT_CLERK_WEBHOOK_SECRET`
+  - Clerk dashboard → Webhooks → Add endpoint:
+    - URL: `http://localhost:3000/api/webhook/clerk`
+  - Copy the signing secret shown after creating the endpoint.
+- `MONGODB_URL`
+  - Create a MongoDB Atlas cluster → Database Access (create a user) → Network Access (allow your IP).
+  - In Atlas, click “Connect” → “Drivers” → copy the connection string and replace the username/password.
+- `UPLOADTHING_SECRET` and `UPLOADTHING_APP_ID`
+  - UploadThing dashboard → your app → API keys.
+
+### 3) Run the app
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Clerk Setup Notes
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- Create a Clerk application and copy the publishable/secret keys.
+- Enable Organizations if you want community features.
+- Add a webhook endpoint in the Clerk dashboard pointing to:
+  - `http://localhost:3000/api/webhook/clerk`
+  - Paste the webhook secret into `NEXT_CLERK_WEBHOOK_SECRET`.
 
-## Learn More
+## UploadThing Setup
 
-To learn more about Next.js, take a look at the following resources:
+- Create an UploadThing app and add the API keys to `.env.local`.
+- Uploads use the `media` route defined in the file router.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## MongoDB
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- Provide a valid `MONGODB_URL` connection string.
+- The app connects automatically on server actions and page loads.
 
-## Deploy on Vercel
+## Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `npm run dev` – start development server
+- `npm run build` – build for production
+- `npm run start` – start production server
+- `npm run lint` – run linting
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Deployment
+
+Deploy on Vercel or your preferred platform. Ensure all environment variables are set in the deployment environment.
