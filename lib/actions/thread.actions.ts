@@ -95,7 +95,13 @@ export async function createThread({
   }
 }
 
-async function fetchAllChildThreads(threadId: string): Promise<any[]> {
+interface ChildThread {
+  _id: string;
+  parentId: string;
+  [key: string]: unknown;
+}
+
+async function fetchAllChildThreads(threadId: string): Promise<ChildThread[]> {
   const childThreads = await Thread.find({ parentId: threadId });
 
   const descendantThreads = [];

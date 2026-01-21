@@ -3,17 +3,15 @@
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "../ui/input";
 
@@ -29,7 +27,6 @@ interface Props {
 }
 
 const Comment = ({ threadId, currentUserImg, currentUserId }: Props) => {
-  const router = useRouter();
   const pathname = usePathname();
 
   const form = useForm({
@@ -44,7 +41,7 @@ const Comment = ({ threadId, currentUserImg, currentUserId }: Props) => {
       threadId,
       values.thread,
       JSON.parse(currentUserId),
-      pathname
+      pathname,
     );
 
     form.reset();

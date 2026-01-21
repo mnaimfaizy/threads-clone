@@ -48,20 +48,30 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
       </div>
 
       <div className="mt-10">
-        {thread.children.map((childItem: any) => (
-          <ThreadCard
-            key={childItem._id}
-            id={childItem._id}
-            currentUserId={userId}
-            parentId={childItem.parentId}
-            content={childItem.text}
-            author={childItem.author}
-            community={childItem.community}
-            createdAt={childItem.createdAt}
-            comments={childItem.children}
-            isComment
-          />
-        ))}
+        {thread.children.map(
+          (childItem: {
+            _id: string;
+            parentId: string;
+            text: string;
+            author: { name: string; image: string; id: string };
+            community: { name: string; id: string; image: string } | null;
+            createdAt: string;
+            children: unknown[];
+          }) => (
+            <ThreadCard
+              key={childItem._id}
+              id={childItem._id}
+              currentUserId={userId}
+              parentId={childItem.parentId}
+              content={childItem.text}
+              author={childItem.author}
+              community={childItem.community}
+              createdAt={childItem.createdAt}
+              comments={childItem.children}
+              isComment
+            />
+          ),
+        )}
       </div>
     </section>
   );
