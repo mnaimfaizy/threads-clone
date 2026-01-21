@@ -11,7 +11,7 @@ async function Page({
   searchParams: { [key: string]: string | undefined };
 }) {
   const { userId } = await auth();
-  if (!userId) return null;
+  if (!userId) redirect("/sign-in");
 
   const userInfo = await fetchUser(userId);
   if (!userInfo?.onboarded) redirect("/onboarding");

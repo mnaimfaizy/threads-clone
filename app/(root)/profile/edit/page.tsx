@@ -6,13 +6,13 @@ import AccountProfile from "@/components/forms/AccountProfile";
 
 async function Page() {
   const { userId } = await auth();
-  if (!userId) return null;
+  if (!userId) redirect("/sign-in");
 
   const userInfo = await fetchUser(userId);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
   const user = await currentUser();
-  if (!user) return null;
+  if (!user) redirect("/sign-in");
 
   const userData = {
     id: user.id,

@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 
 export default async function Home() {
   const { userId } = await auth();
-  if (!userId) return null;
+  if (!userId) redirect("/sign-in");
 
   // Check if user needs onboarding
   const userInfo = await fetchUser(userId);

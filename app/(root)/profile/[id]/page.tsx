@@ -15,7 +15,7 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
 
   const { userId } = await auth();
-  if (!userId) return null;
+  if (!userId) redirect("/sign-in");
 
   // Check if current user exists in database and needs onboarding
   const currentUserInfo = await fetchUser(userId);

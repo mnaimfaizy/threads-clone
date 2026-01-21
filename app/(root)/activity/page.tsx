@@ -7,7 +7,7 @@ import { fetchUser, getActivity } from "@/lib/actions/user.actions";
 
 async function Page() {
   const { userId } = await auth();
-  if (!userId) return null;
+  if (!userId) redirect("/sign-in");
 
   const userInfo = await fetchUser(userId);
   if (!userInfo?.onboarded) redirect("/onboarding");

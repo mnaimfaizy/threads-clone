@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 import { communityTabs } from "@/constants";
 
@@ -13,7 +14,7 @@ import { fetchCommunityDetails } from "@/lib/actions/community.actions";
 async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { userId } = await auth();
-  if (!userId) return null;
+  if (!userId) redirect("/sign-in");
 
   const communityDetails = await fetchCommunityDetails(id);
 
