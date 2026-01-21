@@ -66,7 +66,7 @@ export async function createThread({
 
     const communityIdObject = await Community.findOne(
       { id: communityId },
-      { _id: 1 }
+      { _id: 1 },
     );
 
     const createdThread = await Thread.create({
@@ -88,8 +88,10 @@ export async function createThread({
     }
 
     revalidatePath(path);
-  } catch (error: any) {
-    throw new Error(`Failed to create thread: ${error.message}`);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("Error creating thread:", error);
+    throw new Error(`Failed to create thread: ${message}`);
   }
 }
 
@@ -130,14 +132,14 @@ export async function deleteThread(id: string, path: string): Promise<void> {
       [
         ...descendantThreads.map((thread) => thread.author?._id?.toString()), // Use optional chaining to handle possible undefined values
         mainThread.author?._id?.toString(),
-      ].filter((id) => id !== undefined)
+      ].filter((id) => id !== undefined),
     );
 
     const uniqueCommunityIds = new Set(
       [
         ...descendantThreads.map((thread) => thread.community?._id?.toString()), // Use optional chaining to handle possible undefined values
         mainThread.community?._id?.toString(),
-      ].filter((id) => id !== undefined)
+      ].filter((id) => id !== undefined),
     );
 
     // Recursively delete child threads and their descendants
@@ -146,18 +148,20 @@ export async function deleteThread(id: string, path: string): Promise<void> {
     // Update User model
     await User.updateMany(
       { _id: { $in: Array.from(uniqueAuthorIds) } },
-      { $pull: { threads: { $in: descendantThreadIds } } }
+      { $pull: { threads: { $in: descendantThreadIds } } },
     );
 
     // Update Community model
     await Community.updateMany(
       { _id: { $in: Array.from(uniqueCommunityIds) } },
-      { $pull: { threads: { $in: descendantThreadIds } } }
+      { $pull: { threads: { $in: descendantThreadIds } } },
     );
 
     revalidatePath(path);
-  } catch (error: any) {
-    throw new Error(`Failed to delete thread: ${error.message}`);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("Error deleting thread:", error);
+    throw new Error(`Failed to delete thread: ${message}`);
   }
 }
 
@@ -208,7 +212,7 @@ export async function addCommentToThread(
   threadId: string,
   commentText: string,
   userId: string,
-  path: string
+  path: string,
 ) {
   connectToDB();
 

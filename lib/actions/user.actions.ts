@@ -34,8 +34,9 @@ export async function updateUser({
     if (path === "/profile/edit") {
       revalidatePath(path);
     }
-  } catch (error: any) {
-    throw new Error(`Failed to create/update user: ${error.message}`);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    throw new Error(`Failed to create/update user: ${message}`);
   }
 }
 
@@ -48,8 +49,9 @@ export async function fetchUser(userId: string) {
     //   path: "communities",
     //   model: Community,
     // });
-  } catch (error: any) {
-    throw new Error(`Failed to fetch user: ${error.message}`);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    throw new Error(`Failed to fetch user: ${message}`);
   }
 }
 
@@ -74,8 +76,9 @@ export async function fetchUserPosts(userId: string) {
     });
 
     return threads;
-  } catch (error: any) {
-    throw new Error(`Failed to fetch posts: ${error.message}`);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    throw new Error(`Failed to fetch posts: ${message}`);
   }
 }
 

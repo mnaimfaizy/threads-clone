@@ -9,9 +9,20 @@ import Bottombar from "@/components/shared/Bottombar";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
-  title: "Threads",
-  description: "A Next.js 13 Meta Threads Application",
+export const metadata: Metadata = {
+  title: {
+    default: "Threads",
+    template: "%s | Threads",
+  },
+  description:
+    "A Next.js 15 Meta Threads Application - Connect and share with your community",
+  keywords: ["threads", "social media", "community", "nextjs", "react"],
+  authors: [{ name: "Threads Team" }],
+  openGraph: {
+    title: "Threads",
+    description: "Connect and share with your community",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
