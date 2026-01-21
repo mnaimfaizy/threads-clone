@@ -3,13 +3,12 @@
 import Link from "next/link";
 import React from "react";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { sidebarLinks } from "@/constants";
 import { SignOutButton, SignedIn, useAuth } from "@clerk/nextjs";
 
 function LeftSidebar() {
-  const router = useRouter();
   const pathname = usePathname();
   const { userId } = useAuth();
 
@@ -21,11 +20,15 @@ function LeftSidebar() {
             (pathname.includes(link.route) && link.route.length > 1) ||
             pathname === link.route;
 
-          if (link.route === "/profile") link.route = `${link.route}/${userId}`;
+          // Create the link route - for profile, append userId
+          const linkRoute =
+            link.route === "/profile" && userId
+              ? `/profile/${userId}`
+              : link.route;
 
           return (
             <Link
-              href={link.route}
+              href={linkRoute}
               key={link.label}
               className={`leftsidebar_link ${isActive && "bg-primary-500"}`}
             >
@@ -43,7 +46,7 @@ function LeftSidebar() {
 
       <div className="mt-10 px-6">
         <SignedIn>
-          <SignOutButton signOutCallback={() => router.push("/sign-in")}>
+          <SignOutButton redirectUrl="/sign-in">
             <div className="flex cursor-pointer gap-4 p-4">
               <Image
                 src="/assets/logout.svg"

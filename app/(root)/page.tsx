@@ -1,11 +1,19 @@
 import ThreadCard from "@/components/cards/ThreadCard";
 import { fetchPosts } from "@/lib/actions/thread.actions";
+import { fetchUser } from "@/lib/actions/user.actions";
 import { UserButton } from "@clerk/nextjs";
-import { currentUser } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
+  const { userId } = await auth();
+  if (!userId) return null;
+
+  // Check if user needs onboarding
+  const userInfo = await fetchUser(userId);
+  if (!userInfo || !userInfo.onboarded) redirect("/onboarding");
+
   const result = await fetchPosts(1, 30);
-  const user = await currentUser();
 
   return (
     <>
@@ -20,7 +28,7 @@ export default async function Home() {
               <ThreadCard
                 key={post._id}
                 id={post._id}
-                currentUserId={user?.id || ""}
+                currentUserId={userId || ""}
                 parentId={post.parentId}
                 content={post.text}
                 author={post.author}

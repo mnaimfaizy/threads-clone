@@ -4,9 +4,11 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   experimental: {
-    serverActions: true,
-    serverComponentsExternalPackages: ["mongoose"],
+    serverActions: {
+      bodySizeLimit: "2mb",
+    },
   },
+  serverExternalPackages: ["mongoose"],
   images: {
     remotePatterns: [
       {

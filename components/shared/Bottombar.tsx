@@ -5,10 +5,12 @@ import Link from "next/link";
 import React from "react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 
 function Bottombar() {
   const router = useRouter();
   const pathname = usePathname();
+  const { userId } = useAuth();
 
   return (
     <section className="bottombar">
@@ -18,9 +20,15 @@ function Bottombar() {
             (pathname.includes(link.route) && link.route.length > 1) ||
             pathname === link.route;
 
+          // Create the link route - for profile, append userId
+          const linkRoute =
+            link.route === "/profile" && userId
+              ? `/profile/${userId}`
+              : link.route;
+
           return (
             <Link
-              href={link.route}
+              href={linkRoute}
               key={link.label}
               className={`bottombar_link ${isActive && "bg-primary-500"}`}
             >

@@ -39,7 +39,7 @@ A full-stack social media application inspired by Meta's Threads, built with mod
 
 ### Frontend
 
-- **Framework**: Next.js 14 (App Router) with React 18
+- **Framework**: Next.js 16 (App Router) with React 19
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS + shadcn/ui components
 - **UI Components**: Radix UI primitives (tabs, labels, slots)
@@ -49,9 +49,9 @@ A full-stack social media application inspired by Meta's Threads, built with mod
 ### Backend
 
 - **Runtime**: Next.js Server Actions & API Routes
-- **Database**: MongoDB with Mongoose ODM
-- **Authentication**: Clerk (email, social providers, organizations)
-- **File Storage**: UploadThing (image uploads)
+- **Database**: MongoDB with Mongoose 9 ODM
+- **Authentication**: Clerk v6 (email, social providers, organizations)
+- **File Storage**: UploadThing v7 (image uploads)
 - **Webhooks**: Svix (Clerk webhook verification)
 
 ### Developer Tools
@@ -88,8 +88,7 @@ Optional (but required if you use the webhook route):
 
 UploadThing (required for image uploads):
 
-- `UPLOADTHING_SECRET`
-- `UPLOADTHING_APP_ID`
+- `UPLOADTHING_TOKEN`
 
 Where to get the values:
 
@@ -101,9 +100,9 @@ Where to get the values:
   - Copy the signing secret shown after creating the endpoint.
 - `MONGODB_URL`
   - Create a MongoDB Atlas cluster → Database Access (create a user) → Network Access (allow your IP).
-  - In Atlas, click “Connect” → “Drivers” → copy the connection string and replace the username/password.
-- `UPLOADTHING_SECRET` and `UPLOADTHING_APP_ID`
-  - UploadThing dashboard → your app → API keys.
+  - In Atlas, click "Connect" → "Drivers" → copy the connection string and replace the username/password.
+- `UPLOADTHING_TOKEN`
+  - UploadThing dashboard → your app → API Keys → V7 tab → copy the token.
 
 ### 3) Run the app
 
@@ -288,3 +287,40 @@ threads-clone/
 - New routes in `app/(root)/` or `app/(auth)/`
 - Database models in `lib/models/`
 - Validation schemas in `lib/validations/`
+
+## Recent Updates (January 2026)
+
+### Major Dependency Updates
+
+All dependencies have been updated to their latest versions:
+
+- **Next.js**: Upgraded to v16.1.4
+- **React**: Upgraded to v19.2.3
+- **Clerk**: Upgraded to v6.36.8 (breaking changes - see below)
+- **UploadThing**: Upgraded to v7.7.4 (breaking changes - see below)
+- **Mongoose**: Upgraded to v9.1.4
+- **All other dependencies**: Updated to latest compatible versions
+
+### Breaking Changes - Clerk v6
+
+Clerk v6 introduces several breaking changes:
+
+1. **`currentUser()` replaced with `auth()`**: All server components now use `const { userId } = await auth()` instead of `const user = await currentUser()`
+2. **`authMiddleware()` replaced with `clerkMiddleware()`**: Middleware has been simplified
+3. **Async APIs**: `auth()` and `clerkClient()` are now async
+4. **Configuration**: Updated middleware matcher patterns for Next.js 15+
+
+### Breaking Changes - UploadThing v7
+
+UploadThing v7 introduces:
+
+1. **`UPLOADTHING_TOKEN` replaces `UPLOADTHING_SECRET` and `UPLOADTHING_APP_ID`**: Single token now contains all app configuration
+2. **Import path changes**: `generateReactHelpers` now imported from `@uploadthing/react` instead of `@uploadthing/react/hooks`
+3. **`createNextRouteHandler` renamed to `createRouteHandler`**: Updated in route handlers
+4. **Get token from dashboard**: Navigate to API Keys → V7 tab to get your token
+
+### Next.js Configuration Updates
+
+- **`experimental.serverActions`**: Changed from boolean to object with `bodySizeLimit`
+- **`serverComponentsExternalPackages`**: Moved to top-level `serverExternalPackages`
+- **Middleware**: Next.js 16 deprecates middleware in favor of "proxy" (warning shown but still functional)

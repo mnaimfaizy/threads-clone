@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { currentUser } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 import { fetchUser, fetchUsers } from "@/lib/actions/user.actions";
 import Searchbar from "@/components/shared/Searchbar";
@@ -10,14 +10,14 @@ async function Page({
 }: {
   searchParams: { [key: string]: string | undefined };
 }) {
-  const user = await currentUser();
-  if (!user) return null;
+  const { userId } = await auth();
+  if (!userId) return null;
 
-  const userInfo = await fetchUser(user.id);
+  const userInfo = await fetchUser(userId);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
   const result = await fetchUsers({
-    userId: user.id,
+    userId: userId,
     searchString: searchParams.q,
     pageNumber: searchParams?.page ? +searchParams.page : 1,
     pageSize: 25,

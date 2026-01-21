@@ -1,14 +1,14 @@
 import PostThread from "@/components/forms/PostThread";
 import { fetchUser } from "@/lib/actions/user.actions";
-import { currentUser } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 const page = async () => {
-  const user = await currentUser();
+  const { userId } = await auth();
 
-  if (!user) return null;
+  if (!userId) return null;
 
-  const userInfo = await fetchUser(user.id);
+  const userInfo = await fetchUser(userId);
 
   if (!userInfo?.onboarded) redirect("/onboarding");
 
@@ -16,7 +16,7 @@ const page = async () => {
     <>
       <h1 className="head-text">Create Thread</h1>
 
-      <PostThread userId={userInfo._id} />
+      <PostThread userId={userInfo._id.toString()} />
     </>
   );
 };

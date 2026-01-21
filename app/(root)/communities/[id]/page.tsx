@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { currentUser } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 import { communityTabs } from "@/constants";
 
@@ -10,17 +10,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { fetchCommunityDetails } from "@/lib/actions/community.actions";
 
-async function Page({ params }: { params: { id: string } }) {
-  const user = await currentUser();
-  if (!user) return null;
+async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const { userId } = await auth();
+  if (!userId) return null;
 
-  const communityDetails = await fetchCommunityDetails(params.id);
+  const communityDetails = await fetchCommunityDetails(id);
 
   return (
     <section>
       <ProfileHeader
         accountId={communityDetails.createdBy.id}
-        authUserId={user.id}
+        authUserId={userId}
         name={communityDetails.name}
         username={communityDetails.username}
         imgUrl={communityDetails.image}
@@ -54,7 +55,7 @@ async function Page({ params }: { params: { id: string } }) {
           <TabsContent value="threads" className="w-full text-light-1">
             {/* @ts-ignore */}
             <ThreadsTab
-              currentUserId={user.id}
+              currentUserId={userId}
               accountId={communityDetails._id}
               accountType="Community"
             />
@@ -78,7 +79,7 @@ async function Page({ params }: { params: { id: string } }) {
           <TabsContent value="requests" className="w-full text-light-1">
             {/* @ts-ignore */}
             <ThreadsTab
-              currentUserId={user.id}
+              currentUserId={userId}
               accountId={communityDetails._id}
               accountType="Community"
             />

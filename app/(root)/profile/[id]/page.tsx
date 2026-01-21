@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { currentUser } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,19 +10,32 @@ import { fetchUser } from "@/lib/actions/user.actions";
 import ProfileHeader from "@/components/shared/ProfileHeader";
 import ThreadsTab from "@/components/shared/ThreadsTab";
 
-const page = async ({ params }: { params: { id: string } }) => {
-  const user = await currentUser();
+const page = async ({ params }: { params: Promise<{ id: string }> }) => {
+  // In Next.js 15+, params is a Promise and must be awaited
+  const { id } = await params;
 
-  if (!user) return null;
+  const { userId } = await auth();
+  if (!userId) return null;
 
-  const userInfo = await fetchUser(params.id);
+  // Check if current user exists in database and needs onboarding
+  const currentUserInfo = await fetchUser(userId);
+  if (!currentUserInfo || !currentUserInfo.onboarded) {
+    redirect("/onboarding");
+  }
 
-  if (!userInfo?.onboarded) redirect("/onboarding");
+  // Fetch the profile being viewed
+  const userInfo = await fetchUser(id);
+
+  // If the profile user doesn't exist in database, redirect to home
+  if (!userInfo) {
+    redirect("/");
+  }
+
   return (
     <section>
       <ProfileHeader
         accountId={userInfo.id}
-        authUserId={user.id}
+        authUserId={userId}
         name={userInfo.name}
         username={userInfo.username}
         imgUrl={userInfo.image}
@@ -59,7 +72,7 @@ const page = async ({ params }: { params: { id: string } }) => {
             >
               {/* @ts-ignore */}
               <ThreadsTab
-                currentUserId={user.id}
+                currentUserId={userId}
                 accountId={userInfo.id}
                 accountType="User"
               />
