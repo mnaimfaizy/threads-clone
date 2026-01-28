@@ -11,7 +11,7 @@ import { fetchCommunities } from "@/lib/actions/community.actions";
 async function Page({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
   const { userId } = await auth();
   if (!userId) redirect("/sign-in");
@@ -19,9 +19,10 @@ async function Page({
   const userInfo = await fetchUser(userId);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
+  const params = await searchParams;
   const result = await fetchCommunities({
-    searchString: searchParams.q,
-    pageNumber: searchParams?.page ? +searchParams.page : 1,
+    searchString: params.q,
+    pageNumber: params?.page ? +params.page : 1,
     pageSize: 25,
   });
 

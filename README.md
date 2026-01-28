@@ -2,6 +2,24 @@
 
 A full-stack social media application inspired by Meta's Threads, built with modern web technologies. This platform enables users to create posts (threads), engage in discussions, join communities, and connect with other users.
 
+## Screenshots
+
+### Home Feed
+
+![Home Feed](screenshots/03-home-page.png)
+
+### Communities
+
+![Communities](screenshots/05-communities.png)
+
+### Create Thread
+
+![Create Thread](screenshots/04-create-thread.png)
+
+### Search Users
+
+![Search](screenshots/06-search.png)
+
 ## Features
 
 ### Authentication & User Management

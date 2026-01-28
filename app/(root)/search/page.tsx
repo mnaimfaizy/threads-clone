@@ -8,7 +8,7 @@ import UserCard from "@/components/cards/UserCard";
 async function Page({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
   const { userId } = await auth();
   if (!userId) redirect("/sign-in");
@@ -16,10 +16,11 @@ async function Page({
   const userInfo = await fetchUser(userId);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
+  const params = await searchParams;
   const result = await fetchUsers({
     userId: userId,
-    searchString: searchParams.q,
-    pageNumber: searchParams?.page ? +searchParams.page : 1,
+    searchString: params.q,
+    pageNumber: params?.page ? +params.page : 1,
     pageSize: 25,
   });
 
