@@ -5,6 +5,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { usePathname, useRouter } from "next/navigation";
 import { useOrganization } from "@clerk/nextjs";
+import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -45,6 +46,8 @@ const PostThread = ({ userId }: { userId: string }) => {
     router.push("/");
   };
 
+  const isSubmitting = form.formState.isSubmitting;
+
   return (
     <Form {...form}>
       <form
@@ -71,8 +74,20 @@ const PostThread = ({ userId }: { userId: string }) => {
           )}
         />
 
-        <Button type="submit" className="bg-primary-500">
-          Post Thread
+        <Button
+          type="submit"
+          className="bg-primary-500"
+          disabled={isSubmitting}
+          aria-busy={isSubmitting}
+        >
+          {isSubmitting ? (
+            <span className="inline-flex items-center">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Posting...
+            </span>
+          ) : (
+            "Post Thread"
+          )}
         </Button>
       </form>
     </Form>
